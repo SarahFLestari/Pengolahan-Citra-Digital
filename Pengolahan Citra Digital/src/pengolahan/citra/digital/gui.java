@@ -437,6 +437,11 @@ public class gui extends javax.swing.JFrame {
     public void setActionListener(ActionListener e) {
         browse.addActionListener(e);
         grayscale.addActionListener(e);
-        
+        Perbesar.addActionListener(e);
+        Perkecil.addActionListener(e);
+        TerangTambah.addActionListener(e);
+        TerangKali.addActionListener(e);
+        GelapKurang.addActionListener(e);
+        GelapBagi.addActionListener(e);
     }
 }

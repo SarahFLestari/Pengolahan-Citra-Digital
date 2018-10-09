@@ -16,6 +16,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -29,6 +30,7 @@ public class Main implements ActionListener{
     BufferedImage img;
     ImageIcon img3;
     Image img2;
+    
     public Main() {
         v.setVisible(true);
         v.setActionListener(this);
@@ -39,6 +41,7 @@ public class Main implements ActionListener{
         Object source = e.getSource();
         if (source.equals(v.getBrowse())){
             JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("jpg|png","jpg","png"));
             int returnValue = chooser.showOpenDialog(null);
             if (returnValue == 0){
                 File f = chooser.getSelectedFile();
@@ -48,20 +51,45 @@ public class Main implements ActionListener{
                 img3 = new ImageIcon(img2);
                 v.getGambar().setIcon(img3);
             }        
-        }
-        else if (source.equals(v.getGrayscale())){
-            System.out.println("masuk");
+        } else if (source.equals(v.getGrayscale())){
+            System.out.println("gray");
             img2 = grayScale(image).getScaledInstance(v.getGambar().getWidth(), v.getGambar().getHeight(), Image.SCALE_SMOOTH);
             img3 = new ImageIcon(img2);
             v.getGambar().setIcon(img3);
+            System.out.println("selesai");
+        } else if (source.equals(v.getPerbesar())){
+            System.out.println("Perbesar");
+            img2 = Perbesar(image);
+            img3 = new ImageIcon(img2);
+            v.getGambar().setIcon(img3);
+            System.out.println("selesai");
+               
+        } else if (source.equals(v.getTerangTambah())){
+            System.out.println("terang");
+            img2 = TerangTambah(image).getScaledInstance(v.getGambar().getWidth(), v.getGambar().getHeight(), Image.SCALE_SMOOTH);
+            img3 = new ImageIcon(img2);
+            v.getGambar().setIcon(img3);
+            System.out.println("selesai");
+        } else if (source.equals(v.getTerangKali())){
+            System.out.println("terang");
+            img2 = TerangKali(image).getScaledInstance(v.getGambar().getWidth(), v.getGambar().getHeight(), Image.SCALE_SMOOTH);
+            img3 = new ImageIcon(img2);
+            v.getGambar().setIcon(img3);
+            System.out.println("selesai");
+        } else if (source.equals(v.getGelapBagi())){
+            System.out.println("Gelap");
+            img2 = GelapBagi(image).getScaledInstance(v.getGambar().getWidth(), v.getGambar().getHeight(), Image.SCALE_SMOOTH);
+            img3 = new ImageIcon(img2);
+            v.getGambar().setIcon(img3);
+            
             System.out.println("selesai");
         }
     }
     public Image grayScale(Image image){
         try{
             img = toBufferedimage(image);
-            int H = img.getHeight(v);
-            int W = img.getWidth(v);
+            int H = img.getHeight();
+            int W = img.getWidth();
             int count = 0;
             for (int i = 0;i<H;i++){
                 for (int j = 0;j<W;j++){
@@ -97,6 +125,176 @@ public class Main implements ActionListener{
         return bimage;
     }
     
+    private Image Perbesar(Image image){
+        try {
+            img = toBufferedimage(image);
+            int W = img.getWidth()*2;
+            int H = img.getHeight()*2;
+            int count = 0;
+            for (int i = 0;i<W;i++){
+                for (int j = 0;j<H;j++){
+                    count ++;
+                    c = new Color(img.getRGB(j, i));
+                    int merah = c.getRed();
+                    int biru = c.getBlue();
+                    int hijau = c.getGreen();
+                    Color newColor = new Color(merah,biru,hijau);
+                    for (int k = 0;k<2;k++)
+                        for (int l = 0;l<2;l++){
+                            int baris = (i-1)*2+k;
+                            int kolom = (j-1)*2+l;
+                            int P = img.getRGB(k, l);
+                            img.setRGB(baris, kolom, newColor.getRGB());
+                        }
+                }
+            }
+            
+        } catch (Exception e){
+            System.out.println("error");
+        }
+        image = img;
+        return image;
+    }
+    
+    public Image TerangTambah(Image image){
+        try{
+            img = toBufferedimage(image);
+            int H = img.getHeight();
+            int W = img.getWidth();
+//            System.out.println("width,height: "+W+", "+H);
+//            int count = 0;
+//            for (int i=0;i<H;i++){
+//                for (int j=0;j<W;j++){
+//                    count ++;
+//                    System.out.println("X,Y: "+j+", "+i);
+//                    int pixel = img.getRGB(j, i);
+//                    printPixelARGB(pixel);
+//                    System.out.println("masuk");
+//                    int alpha = (pixel >> 24) & 0xff + 10;
+//                    int red = (pixel >> 16) & 0xff + 10;
+//                    int green = (pixel >> 8) & 0xff + 10;
+//                    int blue = (pixel) & 0xff + 10;
+//                    System.out.println("masuk2");
+//                    Color c = new Color(red,green,blue);
+//                    img.setRGB(j, i, c.getRGB());
+//                    System.out.println("");
+//                }
+//            }
+            int factor = 80;
+            for (int y=0;y<H;y++){
+                for (int x=0;x<W;x++){
+                    Color c = new Color(img.getRGB(x, y));
+                    int merah = c.getRed()+factor;
+                    int hijau = c.getGreen()+factor;
+                    int biru = c.getBlue()+factor;
+                    if (merah >= 255){
+                        merah=255;
+                    } else if (merah<0){
+                        merah = 0;
+                    }
+                    if (hijau >= 255){
+                        hijau=255;
+                    } else if (hijau<0){
+                        hijau = 0;
+                    }
+                    if (biru >= 255){
+                        biru=255;
+                    } else if (biru<0){
+                        biru = 0;
+                    }
+                    img.setRGB(x, y, new Color(merah,hijau,biru).getRGB());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("kok error");
+        }
+        image = img;
+        return image;
+    }
+    public void printPixelARGB(int pixel) {
+        int alpha = (pixel >> 24) & 0xff + 10;
+        int red = (pixel >> 16) & 0xff + 10;
+        int green = (pixel >> 8) & 0xff+ 10;
+        int blue = (pixel) & 0xff +10;
+        System.out.println("argb: " + alpha + ", " + red + ", " + green + ", " + blue);
+    }
+        public Image TerangKali(Image image){
+        try{
+            img = toBufferedimage(image);
+            int H = img.getHeight();
+            int W = img.getWidth();
+            int factor = 10;
+            for (int y=0;y<H;y++){
+                for (int x=0;x<W;x++){
+                    Color c = new Color(img.getRGB(x, y));
+                    int merah = c.getRed()*factor;
+                    int hijau = c.getGreen()*factor;
+                    int biru = c.getBlue()*factor;
+                    if (merah >= 255){
+                        merah=255;
+                    } else if (merah<0){
+                        merah = 0;
+                    }
+                    if (hijau >= 255){
+                        hijau=255;
+                    } else if (hijau<0){
+                        hijau = 0;
+                    }
+                    if (biru >= 255){
+                        biru=255;
+                    } else if (biru<0){
+                        biru = 0;
+                    }
+                    img.setRGB(x, y, new Color(merah,hijau,biru).getRGB());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("kok error");
+        }
+        image = img;
+        return image;
+    }
+        
+    public Image GelapBagi(Image image){
+        try{
+            img = toBufferedimage(image);
+            int H = img.getHeight();
+            int W = img.getWidth();
+            int factor = 2;
+            for (int y=0;y<H;y++){
+                for (int x=0;x<W;x++){
+                    Color c = new Color(img.getRGB(x, y));
+                    int merah = c.getRed()/factor;
+                    int hijau = c.getGreen()/factor;
+                    int biru = c.getBlue()/factor;
+                    if (merah >= 255){
+                        merah=255;
+                    } else if (merah<0){
+                        merah = 0;
+                    }
+                    if (hijau >= 255){
+                        hijau=255;
+                    } else if (hijau<0){
+                        hijau = 0;
+                    }
+                    if (biru >= 255){
+                        biru=255;
+                    } else if (biru<0){
+                        biru = 0;
+                    }
+                    img.setRGB(x, y, new Color(merah,hijau,biru).getRGB());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("kok error");
+        }
+        image = img;
+        return image;    
+    }
+    public Image GelapKurang (Image image){
+        
+    }
+  
 }
     
  
